@@ -81,9 +81,8 @@
 </head>
 <body>
 
-<h1>Torneo de mosaicos: ¿cuál se parece más al original?</h1>
+<h1>¿Cuál de estas dos imágenes se parece más al motivo original?</h1>
 <div id="progreso"></div>
-<div id="instruccion">Haz click en la imagen que más se parezca al motivo original</div>
 
 <div id="contenedor-partido"></div>
 <div id="mensaje-espera"></div>
@@ -122,6 +121,7 @@ let byeWinner = null;  // si el número de jugadores es impar, uno pasa directo
 let currentMatchIndex = 0;
 let winnersRonda = [];
 let ganadoresPorMotivo = {};
+let numeroVotoGlobal = 0; // cuenta todos los votos del usuario, del 1 al 44
 
 // ======= FUNCIONES =======
 function shuffle(array) {
@@ -185,19 +185,18 @@ function mostrarPartidoActual() {
   document.getElementById("contenedor-partido").innerHTML = `
     <div class="tarjeta" onclick="elegir('${metodoA}', '${metodoB}')">
       <img src="${rutaImagen(motivo, metodoA)}" alt="Opción A">
-      <button>Elegir esta</button>
     </div>
     <div class="tarjeta" onclick="elegir('${metodoB}', '${metodoA}')">
       <img src="${rutaImagen(motivo, metodoB)}" alt="Opción B">
-      <button>Elegir esta</button>
     </div>
   `;
 }
 
 function elegir(elegido, otro) {
   const motivo = motivoActual();
+  numeroVotoGlobal++;
 
-  enviarVoto(motivo, elegido, otro, elegido);
+  enviarVoto(motivo, elegido, otro, elegido, numeroVotoGlobal);
 
   winnersRonda.push(elegido);
   currentMatchIndex++;
@@ -222,7 +221,6 @@ function actualizarProgreso() {
 
 function mostrarPantallaFinal() {
   document.getElementById("contenedor-partido").style.display = "none";
-  document.getElementById("instruccion").style.display = "none";
   document.getElementById("progreso").innerText = "Torneo completado";
   document.getElementById("pantalla-final").style.display = "block";
 
@@ -233,12 +231,13 @@ function mostrarPantallaFinal() {
   document.getElementById("tabla-ganadores").innerHTML = filas;
 }
 
-function enviarVoto(motivo, elegida, otra, resultado) {
+function enviarVoto(motivo, elegida, otra, resultado, numeroVoto) {
   fetch(APPS_SCRIPT_URL, {
     method: "POST",
     mode: "no-cors",
     body: JSON.stringify({
       idUsuario: idUsuario,
+      numeroVoto: numeroVoto,
       motivo: motivo,
       imagen_A: elegida,
       imagen_B: otra,

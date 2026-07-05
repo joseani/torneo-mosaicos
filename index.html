@@ -81,7 +81,7 @@
 </head>
 <body>
 
-<h1 id="pregunta"></h1>
+<h1 id="pregunta">¿Qué mosaico te gusta más?</h1>
 <div id="progreso"></div>
 
 <div id="contenedor-partido"></div>
@@ -190,11 +190,6 @@ function mostrarPartidoActual() {
 
   const [metodoA, metodoB] = round[currentMatchIndex];
   const motivo = motivoActual();
-  const nombreMotivo = nombresLegibles[motivo] || motivo;
-  const numeroPreguntaActual = numeroVotoGlobal + 1;
-
-  document.getElementById("pregunta").innerText =
-    `¿Qué mosaico te gusta más?`;
 
   document.getElementById("contenedor-partido").innerHTML = `
     <div class="tarjeta" onclick="elegir('${metodoA}', '${metodoB}')">
@@ -228,6 +223,8 @@ function siguienteMotivo() {
 
 function actualizarProgreso() {
   const motivo = motivoActual();
+  const nombreMotivo = nombresLegibles[motivo] || motivo;
+  const numeroPreguntaActual = numeroVotoGlobal + 1;
   document.getElementById("progreso").innerText =
     `${nombreMotivo} - pregunta ${numeroPreguntaActual}/${TOTAL_VOTOS}`;
 }
